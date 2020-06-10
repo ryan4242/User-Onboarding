@@ -1,6 +1,6 @@
 form {
-  height: 25vh;
-  width: 18vw;
+  min-height: 25vh;
+  min-width: 18vw;
   background: #ececec;
   border-radius: 10px;
   padding: 10px;
