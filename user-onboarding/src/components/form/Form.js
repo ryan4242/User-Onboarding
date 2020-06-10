@@ -2,7 +2,6 @@ import React, {useState, useEffect} from 'react';
 import './form.css';
 import * as yup from 'yup';
 import axios from 'axios';
-import UserList from '../userList/UserList';
 
 const formSchema = yup.object().shape({
   name: yup.string().required('Must add your name'),

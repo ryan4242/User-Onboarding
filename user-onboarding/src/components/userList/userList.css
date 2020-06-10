@@ -1,0 +1,10 @@
+.users {
+  text-align: center;
+}
+
+.usersContainer {
+  width: 100vw;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
