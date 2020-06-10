@@ -1,18 +1,20 @@
 import React, {useState, useEffect} from 'react';
 import './form.css';
 import * as yup from 'yup';
+import axios from 'axios';
+import UserList from '../userList/UserList';
 
 const formSchema = yup.object().shape({
   name: yup.string().required('Must add your name'),
   pass: yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
-  terms: yup.boolean().oneOf([true], 'You must accept terms')
+  terms: yup.mixed().oneOf([true], 'You must accept terms')
 })
 
-const Form = () => {
+const Form = props => {
   const [newUser, setNewUser] = useState({
     name: '',
     pass: '',
-    terms: false,
+    terms: '',
   });
 
   const [buttonDisabled, setButtonDisabled] = useState(true);
@@ -29,6 +31,22 @@ const Form = () => {
     })
   }, [newUser])
 
+  const handleSubmit = e => {
+    e.preventDefault();
+    axios
+      .post("https://reqres.in/api/users", newUser)
+      .then(res => {
+        props.setUsers([...props.users, res.data]);
+
+        setNewUser({
+          name: "",
+          pass: "",
+          terms: "",
+        });
+      })
+      .catch(err => console.log('error', err.response));
+  };
+
   const validateChange = e => {
     yup
       .reach(formSchema, e.target.name)
@@ -38,7 +56,8 @@ const Form = () => {
           ...errors, 
           [e.target.name]: ''
         })
-      }).catch(err => {
+      })
+      .catch(err => {
         setErrors({
           ...errors,
           [e.target.name]: err.errors[0]
@@ -48,19 +67,10 @@ const Form = () => {
 
   const handleChange = e => {
     e.persist();
-    setNewUser({...newUser, [e.target.name]: e.target.type === 'checkbox' ? e.target.checked : e.target.value});
-    console.log(newUser);
-    validateChange(e);
-  }
+    const user = {...newUser, [e.target.name]: e.target.type === 'checkbox' ? e.target.checked : e.target.value}
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    console.log('submitted!');
-    setNewUser({
-      name: '',
-      pass: '',
-      terms: false,
-    })
+    validateChange(e);
+    setNewUser(user);
   }
 
   return (
@@ -68,17 +78,16 @@ const Form = () => {
       <label htmlFor='name'>
         Name:
         <input id='name' type='text' name='name' value={newUser.name} onChange={handleChange} />
-        {errors.name.length > 0 ? <p className='error'>{errors.name}</p> : null}
+        {errors.name.length > 0 ? (<p className='error'>{errors.name}</p>) : null}
       </label>
       <label htmlFor='pass'>
         Password:
         <input id='pass' type='password' name='pass' value={newUser.pass} onChange={handleChange} />
-        {errors.pass.length > 0 ? <p className='error'>{errors.pass}</p> : null}
+        {errors.pass.length > 0 ? (<p className='error'>{errors.pass}</p>) : null}
       </label>
       <label htmlFor='terms'>
-        <input id='terms' type='checkbox' name='terms' checked={newUser.terms} value={newUser.terms} onChange={handleChange} />
+        <input id='terms' type='checkbox' name='terms' checked={newUser.terms} onChange={handleChange} />
         Accept Terms of Service
-        {errors.terms.length > 0 ? <p className='error'>{errors.terms}</p> : null}
       </label>
       <button type='submit' disabled={buttonDisabled}>Submit</button>
     </form>
