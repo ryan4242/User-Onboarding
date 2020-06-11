@@ -7,6 +7,9 @@ describe('Testing our form', function() {
     cy.get('[data-cy=name]')
       .type('Ryan McInnis')
       .should('have.value', 'Ryan McInnis');
+    cy.get('[data-cy=email]')
+      .type('Ryan@email.com')
+      .should('have.value', 'Ryan@email.com');
     cy.get('[data-cy=pass]')
       .type('password')
       .should('have.value', 'password');
@@ -17,7 +20,7 @@ describe('Testing our form', function() {
     .click()
   })
 
-  it('tests form validation', function() {
+  it('tests inline form validation', function() {
     cy.get('[data-cy=name]')
       .type('Ryan McInnis').clear();
     expect('[data-cy=name] .error').to.exist
