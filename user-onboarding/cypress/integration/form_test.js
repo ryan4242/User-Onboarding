@@ -23,9 +23,15 @@ describe('Testing our form', function() {
   it('tests inline form validation', function() {
     cy.get('[data-cy=name]')
       .type('Ryan McInnis').clear();
-    expect('[data-cy=name] .error').to.exist
+    cy.get('[data-cy=email]')
+      .type('Ryan@email.com').clear();
     cy.get('[data-cy=pass]')
       .type('Ryan McInnis').clear();
-    expect('[data-cy=pass] .error').to.exist
+    cy.get('.error')
+      .should('have.length', 3);
+    cy.get('[data-cy=email]')
+      .type('Ryan@email');
+    cy.get('.error')
+      .should('have.length', 3);
   })
 })
