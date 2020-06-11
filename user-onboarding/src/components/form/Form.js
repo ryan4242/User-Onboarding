@@ -5,6 +5,7 @@ import axios from 'axios';
 
 const formSchema = yup.object().shape({
   name: yup.string().required('Must add your name'),
+  email: yup.string().email('Must use valid email').required('Must fill out email'),
   pass: yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
   terms: yup.mixed().oneOf([true], 'You must accept terms')
 })
@@ -12,6 +13,7 @@ const formSchema = yup.object().shape({
 const Form = props => {
   const [newUser, setNewUser] = useState({
     name: '',
+    email: '',
     pass: '',
     terms: '',
   });
@@ -20,6 +22,7 @@ const Form = props => {
 
   const [errors, setErrors] = useState({
     name: '',
+    email: '',
     pass: '',
     terms: '',
   });
@@ -39,6 +42,7 @@ const Form = props => {
 
         setNewUser({
           name: "",
+          email: '',
           pass: "",
           terms: "",
         });
@@ -76,19 +80,24 @@ const Form = props => {
     <form onSubmit={handleSubmit}>
       <label htmlFor='name'>
         Name:
-        <input id='name' type='text' name='name' value={newUser.name} onChange={handleChange} />
+        <input id='name' type='text' name='name' data-cy='name' value={newUser.name} onChange={handleChange} />
         {errors.name.length > 0 ? (<p className='error'>{errors.name}</p>) : null}
+      </label>
+      <label htmlFor='email'>
+        Email:
+        <input id='email' type='email' name='email' data-cy='email' value={newUser.email} onChange={handleChange} />
+        {errors.email.length > 0 ? (<p className='error'>{errors.email}</p>) : null}
       </label>
       <label htmlFor='pass'>
         Password:
-        <input id='pass' type='password' name='pass' value={newUser.pass} onChange={handleChange} />
+        <input id='pass' type='password' name='pass' data-cy='pass' value={newUser.pass} onChange={handleChange} />
         {errors.pass.length > 0 ? (<p className='error'>{errors.pass}</p>) : null}
       </label>
       <label htmlFor='terms'>
-        <input id='terms' type='checkbox' name='terms' checked={newUser.terms} onChange={handleChange} />
+        <input id='terms' type='checkbox' name='terms' data-cy='terms' checked={newUser.terms} onChange={handleChange} />
         Accept Terms of Service
       </label>
-      <button type='submit' disabled={buttonDisabled}>Submit</button>
+      <button type='submit' data-cy='submit' disabled={buttonDisabled}>Submit</button>
     </form>
   )
 };
